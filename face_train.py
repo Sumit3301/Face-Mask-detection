@@ -10,11 +10,12 @@ haar_cascade=cv2.CascadeClassifier('haar_face.xml')
 features=[]
 labels=[]
 
-def train():
+def training():
     for type in people:
         path=os.path.join(dir,type)
+        #print(path)
         label=people.index(type)
-
+        print(label)
         for img in os.listdir(path):
             img_path=os.path.join(path,img)
 
@@ -29,7 +30,21 @@ def train():
                 features.append(face)
                 labels.append(label)
 
-train()
-print(f'Length of feature list={len(features)}')
-print(f'Length of feature list={len(labels)}')
+training()
+print('Training Done ---------')
+
+labels=np.array(labels)
+features=np.array(features,dtype='object')
+
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+recognizer.train(features,labels)
+
+
+recognizer.save('face_trained.yml')
+
+#Train the recognizer of the features list and labels
+
+np.save('features.npy',features)
+np.save('labels.npy',labels)
 
